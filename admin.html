@@ -92,26 +92,37 @@ textarea{min-height:90px;resize:vertical}
   <span class="dirty" id="dirty">มีการแก้ไขที่ยังไม่ได้บันทึก</span>
   <a class="btn" href="index.html" target="_blank" rel="noopener">ดูหน้าร้าน</a>
   <button class="btn" id="ebBtn">สร้าง eBook PDF</button>
-  <button class="btn pri" id="save">บันทึกเป็นไฟล์</button>
+  <button class="btn" id="ghBtn" title="ตั้งค่าการเชื่อมต่อ GitHub">⚙ เชื่อมต่อ</button>
+  <button class="btn pri" id="push">บันทึกขึ้นเว็บ</button>
 </div></div>
 
 <div class="wrap">
   <div class="steps">
-    <div class="step"><b>1</b>เพิ่มหรือแก้สินค้า อัปรูป ใส่ราคา</div>
-    <div class="step"><b>2</b>กด <b style="all:unset;font-family:Mitr">บันทึกเป็นไฟล์</b> จะได้ไฟล์ <code>catalog-update.zip</code></div>
-    <div class="step"><b>3</b>แตก zip แล้วอัปโหลดโฟลเดอร์ <code>data</code> และ <code>images</code> ขึ้นเว็บ (ดูวิธีด้านล่าง)</div>
+    <div class="step"><b>1</b>เพิ่ม แก้ ซ่อน หรือลบสินค้า อัปรูป ใส่ราคา</div>
+    <div class="step"><b>2</b>กด <b style="all:unset;font-family:Mitr">บันทึกขึ้นเว็บ</b> ระบบส่งข้อมูลและรูปขึ้น GitHub ให้เอง</div>
+    <div class="step"><b>3</b>รอ 1–2 นาที หน้าร้านจะอัปเดตเอง <span id="ghState" class="note"></span></div>
   </div>
 
   <div class="tools">
     <input type="search" id="q" placeholder="ค้นหารหัส ชื่อ หมวด" aria-label="ค้นหา">
     <button class="btn pri" id="add">+ เพิ่มสินค้า</button>
     <label class="btn" style="flex-direction:row;color:var(--ink);font-size:14.5px">นำเข้า CSV<input type="file" id="imp" accept=".csv,text/csv" hidden></label>
-    <button class="btn" id="csvOnly">ดาวน์โหลด CSV อย่างเดียว</button>
+    <button class="btn" id="csvOnly">ดาวน์โหลด CSV</button>
+    <button class="btn" id="save">ดาวน์โหลดไฟล์สำรอง (zip)</button>
   </div>
   <div class="list" id="list"><div class="note">กำลังโหลด…</div></div>
 
   <details class="help">
-    <summary>วิธีอัปโหลดขึ้นเว็บ (GitHub Pages)</summary>
+    <summary>วิธีเชื่อมต่อ GitHub (ทำครั้งเดียวต่อเครื่อง) และวิธีอัปโหลดแบบเดิม</summary>
+    <ol>
+      <li>เปิด <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">github.com/settings/personal-access-tokens/new</a> (ต้องล็อกอิน GitHub อยู่)</li>
+      <li>Token name: <code>chana-admin</code> · Expiration: เลือกนานที่สุดที่มีให้</li>
+      <li>Repository access: เลือก <b>Only select repositories</b> แล้วเลือก <code>chana-velvetbloom.github.io</code></li>
+      <li>Permissions → Repository permissions → <b>Contents</b>: เลือก <b>Read and write</b></li>
+      <li>กด <b>Generate token</b> แล้วคัดลอกรหัสที่ขึ้นต้นด้วย <code>github_pat_</code> มาวางในปุ่ม <b>⚙ เชื่อมต่อ</b> ด้านบน</li>
+    </ol>
+    <p class="note">รหัสนี้เก็บไว้ในเบราว์เซอร์เครื่องนี้เท่านั้น ลูกค้าที่เปิดหน้าร้านมองไม่เห็น ถ้าใช้คอมเครื่องอื่นหรือมือถือ ต้องวางรหัสอีกครั้ง และห้ามส่งรหัสนี้ให้ใคร</p>
+    <p class="note" style="margin-top:14px"><b>แบบเดิม (สำรอง):</b></p>
     <ol>
       <li>เปิด repository ของเว็บใน github.com แล้วกด <b>Add file → Upload files</b></li>
       <li>ลากโฟลเดอร์ <code>data</code> และ <code>images</code> ที่แตกจาก zip มาวาง ไฟล์เดิมชื่อเดียวกันจะถูกแทนที่</li>
@@ -144,6 +155,17 @@ textarea{min-height:90px;resize:vertical}
 </form></dialog>
 <datalist id="cats"></datalist>
 <input type="file" id="pick" accept="image/*" multiple hidden>
+<dialog id="ghd"><form id="ghf" method="dialog">
+  <h2>เชื่อมต่อ GitHub</h2>
+  <p class="note">วางรหัส (token) ที่สร้างจาก GitHub ตามวิธีที่ท้ายหน้า ระบบจะใช้รหัสนี้บันทึกข้อมูลขึ้นเว็บให้</p>
+  <div class="fg">
+    <label class="full">รหัส Token<input name="token" type="password" autocomplete="off" placeholder="github_pat_..."></label>
+    <label>เจ้าของ (username)<input name="owner"></label>
+    <label>Repository<input name="repo"></label>
+  </div>
+  <div class="err" id="gherr"></div>
+  <div class="foot"><button type="button" class="btn warn" id="ghOut">ลบรหัสออกจากเครื่องนี้</button><span style="flex:1"></span><button type="button" class="btn" id="ghCancel">ยกเลิก</button><button type="submit" class="btn pri">ทดสอบและบันทึก</button></div>
+</form></dialog>
 <div id="ebx" aria-label="ตัวอย่าง eBook">
   <div class="tb no-print"><h2>ตัวอย่าง eBook (A5)</h2>
     <select id="ebCat" aria-label="เลือกหมวด"><option value="">ทั้งร้าน</option></select>
@@ -162,7 +184,7 @@ textarea{min-height:90px;resize:vertical}
 const $ = s => document.querySelector(s);
 let items = [], edit = null, work = null, dirty = false, askDel = false;
 const newBlobs = new Map(); // filename -> Blob (รูปที่อัปใหม่)
-const urlOf = f => newBlobs.has(f) ? (newBlobs.get(f).__url ||= URL.createObjectURL(newBlobs.get(f))) : SHOP.imageDir + encodeURIComponent(f);
+const urlOf = f => newBlobs.has(f) ? (newBlobs.get(f).__url ||= URL.createObjectURL(newBlobs.get(f))) : (typeof GH !== 'undefined' && GH.token ? `https://raw.githubusercontent.com/${GH.owner}/${GH.repo}/${GH.branch}/${SHOP.imageDir}${encodeURIComponent(f)}` : SHOP.imageDir + encodeURIComponent(f));
 function toast(t) { const e = $('#toast'); e.textContent = t; e.classList.add('on'); clearTimeout(toast.t); toast.t = setTimeout(() => e.classList.remove('on'), 2200); }
 function setDirty(v) { dirty = v; $('#dirty').classList.toggle('on', v); }
 window.addEventListener('beforeunload', e => { if (dirty) { e.preventDefault(); e.returnValue = ''; } });
@@ -279,7 +301,65 @@ $('#ebBtn').onclick = () => {
 $('#ebCat').onchange = ebDraw; $('#ebPer').onchange = ebDraw;
 $('#ebClose').onclick = () => { $('#ebx').classList.remove('on'); document.body.classList.remove('eb-on'); };
 $('#ebPdf').onclick = async () => { $('#ebInfo').textContent = 'กำลังเตรียมรูป…'; await ebookReady($('#ebBook')); $('#ebInfo').textContent = ''; try { window.print(); } catch (e) { toast('เบราว์เซอร์นี้สั่งพิมพ์ไม่ได้ ลองเปิดใน Chrome หรือ Safari'); } };
-loadProducts().then(ps => { items = ps; render(); }).catch(() => { items = []; render(); toast('ยังไม่มีไฟล์ข้อมูล เริ่มเพิ่มสินค้าได้เลย'); });
+// ===== GitHub: บันทึกขึ้นเว็บโดยตรง =====
+const GH = (() => { let s = {}; try { s = JSON.parse(localStorage.getItem('chana_gh') || '{}'); } catch (e) {} return { owner: s.owner || SHOP.repo.owner, repo: s.repo || SHOP.repo.name, branch: SHOP.repo.branch, token: s.token || '' }; })();
+const savedBlobs = new Set();
+function ghStore() { try { localStorage.setItem('chana_gh', JSON.stringify({ owner: GH.owner, repo: GH.repo, token: GH.token })); } catch (e) { toast('เบราว์เซอร์นี้จำรหัสไม่ได้ ต้องวางใหม่ทุกครั้งที่เปิดหน้า'); } }
+function ghShow() { $('#ghState').textContent = GH.token ? '· เชื่อมต่อแล้ว ✓' : '· ยังไม่ได้เชื่อมต่อ (กด ⚙ เชื่อมต่อ)'; }
+async function gh(path, opt = {}) {
+  const r = await fetch(`https://api.github.com/repos/${GH.owner}/${GH.repo}${path}`, { ...opt, headers: { Authorization: 'Bearer ' + GH.token, Accept: 'application/vnd.github+json', 'Content-Type': 'application/json', ...(opt.headers || {}) } });
+  if (!r.ok) { const t = await r.text().catch(() => ''); const e = new Error(r.status === 401 ? 'รหัส Token ไม่ถูกต้องหรือหมดอายุ' : r.status === 403 ? 'Token ไม่มีสิทธิ์แก้ไข (ตั้ง Contents เป็น Read and write)' : r.status === 404 ? 'ไม่พบ repository หรือ Token ไม่ได้เลือก repository นี้' : 'GitHub ตอบกลับ ' + r.status); e.detail = t; throw e; }
+  return r.status === 204 ? null : r.json();
+}
+const b64utf8 = s => { const b = new TextEncoder().encode(s); let x = ''; for (let i = 0; i < b.length; i += 0x8000) x += String.fromCharCode(...b.subarray(i, i + 0x8000)); return btoa(x); };
+const b64blob = blob => new Promise((ok, no) => { const f = new FileReader(); f.onload = () => ok(String(f.result).split(',')[1]); f.onerror = no; f.readAsDataURL(blob); });
+async function ghLoad() {
+  const j = await gh(`/contents/${SHOP.dataUrl}?ref=${GH.branch}`);
+  const bin = atob(j.content.replace(/\n/g, '')); const u = Uint8Array.from(bin, c => c.charCodeAt(0));
+  return parseCSV(new TextDecoder().decode(u)).map(normalize).sort((a, b) => (+a.sort || 999) - (+b.sort || 999));
+}
+async function ghPush() {
+  if (!GH.token) { $('#ghBtn').click(); return toast('เชื่อมต่อ GitHub ก่อนนะคะ'); }
+  const btn = $('#push'); btn.disabled = true; const old = btn.textContent;
+  try {
+    const used = new Set(items.flatMap(p => p.imgs));
+    const imgs = [...newBlobs].filter(([n]) => used.has(n) && !savedBlobs.has(n));
+    btn.textContent = 'กำลังบันทึก…';
+    const ref = await gh(`/git/ref/heads/${GH.branch}`);
+    const head = ref.object.sha;
+    const base = (await gh(`/git/commits/${head}`)).tree.sha;
+    const tree = [];
+    let k = 0;
+    for (const [name, blob] of imgs) {
+      btn.textContent = `อัปรูป ${++k}/${imgs.length}…`;
+      const b = await gh('/git/blobs', { method: 'POST', body: JSON.stringify({ content: await b64blob(blob), encoding: 'base64' }) });
+      tree.push({ path: SHOP.imageDir + name, mode: '100644', type: 'blob', sha: b.sha });
+    }
+    btn.textContent = 'บันทึกข้อมูล…';
+    const csv = await gh('/git/blobs', { method: 'POST', body: JSON.stringify({ content: b64utf8(toCSV(serial())), encoding: 'base64' }) });
+    tree.push({ path: SHOP.dataUrl, mode: '100644', type: 'blob', sha: csv.sha });
+    const t = await gh('/git/trees', { method: 'POST', body: JSON.stringify({ base_tree: base, tree }) });
+    const c = await gh('/git/commits', { method: 'POST', body: JSON.stringify({ message: `อัปเดตสินค้า ${items.length} รายการ` + (imgs.length ? ` + รูปใหม่ ${imgs.length} รูป` : ''), tree: t.sha, parents: [head] }) });
+    await gh(`/git/refs/heads/${GH.branch}`, { method: 'PATCH', body: JSON.stringify({ sha: c.sha }) });
+    imgs.forEach(([n]) => savedBlobs.add(n));
+    setDirty(false); toast('บันทึกขึ้นเว็บแล้ว ✓ หน้าร้านจะอัปเดตใน 1–2 นาที');
+  } catch (e) { toast('บันทึกไม่สำเร็จ: ' + e.message); console.error(e, e.detail); }
+  finally { btn.disabled = false; btn.textContent = old; }
+}
+$('#push').onclick = ghPush;
+$('#ghBtn').onclick = () => { const f = $('#ghf'); f.token.value = GH.token; f.owner.value = GH.owner; f.repo.value = GH.repo; $('#gherr').textContent = ''; $('#ghd').showModal(); };
+$('#ghCancel').onclick = () => $('#ghd').close();
+$('#ghOut').onclick = () => { GH.token = ''; ghStore(); ghShow(); $('#ghd').close(); toast('ลบรหัสออกจากเครื่องนี้แล้ว'); };
+$('#ghf').addEventListener('submit', async e => {
+  e.preventDefault(); const f = e.target; const prev = { ...GH };
+  GH.token = f.token.value.trim(); GH.owner = f.owner.value.trim(); GH.repo = f.repo.value.trim();
+  $('#gherr').textContent = 'กำลังทดสอบ…';
+  try { const r = await gh(''); if (!r.permissions || !r.permissions.push) throw new Error('Token ไม่มีสิทธิ์แก้ไข (ตั้ง Contents เป็น Read and write)'); ghStore(); ghShow(); $('#ghd').close(); toast('เชื่อมต่อสำเร็จ ✓');
+    if (!dirty) ghLoad().then(ps => { items = ps; render(); }).catch(() => {}); }
+  catch (err) { Object.assign(GH, prev); $('#gherr').textContent = err.message; }
+});
+ghShow();
+(GH.token ? ghLoad().catch(() => loadProducts()) : loadProducts()).then(ps => { items = ps; render(); }).catch(() => { items = []; render(); toast('ยังไม่มีไฟล์ข้อมูล เริ่มเพิ่มสินค้าได้เลย'); });
 }
 </script>
 </body>
