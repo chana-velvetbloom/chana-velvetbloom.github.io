@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>eBook Catalog · C.HANA</title>
+<link rel="icon" href="assets/logo.png">
+<link rel="stylesheet" href="assets/fonts.css">
+<link rel="stylesheet" href="assets/ebook.css">
+<style>
+body{margin:0;background:#e9e6dc;font-family:Sarabun,sans-serif;color:#3E4A33}
+.tb{position:sticky;top:0;z-index:5;background:#FBF8EF;border-bottom:1px solid #ECE6D6;display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:10px max(4vw,14px)}
+.tb h1{font:500 18px Mitr,sans-serif;margin:0 auto 0 0}
+.tb select,.tb button,.tb a{min-height:44px;border-radius:999px;border:1px solid #ECE6D6;background:#fff;padding:0 16px;font:15px Mitr,sans-serif;color:inherit;text-decoration:none;display:inline-flex;align-items:center;cursor:pointer}
+.tb .pri{background:#6E8F52;border-color:#6E8F52;color:#fff}
+.tb small{flex-basis:100%;color:#7d8772;font-size:13px}
+#book{padding:18px 0}
+@media(max-width:600px){#book{zoom:.62}}
+</style>
+</head>
+<body>
+<div class="tb no-print">
+  <h1>สร้าง eBook PDF</h1>
+  <select id="cat" aria-label="เลือกหมวด"><option value="">ทั้งร้าน</option></select>
+  <select id="per" aria-label="จำนวนต่อหน้า"><option value="12">12 ชิ้น/หน้า</option><option value="9">9 ชิ้น/หน้า</option><option value="6">6 ชิ้น/หน้า</option><option value="4">4 ชิ้น/หน้า (รูปใหญ่)</option></select>
+  <button class="pri" id="pdf">บันทึกเป็น PDF</button>
+  <a href="admin.html">กลับหน้าจัดการ</a>
+  <small id="info">กำลังโหลด…</small>
+</div>
+<div id="book"></div>
+<script src="assets/common.js"></script>
+<script src="assets/ebook.js"></script>
+<script>
+{
+const $ = s => document.querySelector(s);
+let all = [];
+const draw = () => { const r = renderEbook($('#book'), all, { category: $('#cat').value, perPage: $('#per').value }); $('#info').textContent = `${r.items} รายการ · ${r.pages} หน้า (A5) — กด “บันทึกเป็น PDF” แล้วเลือกปลายทางเป็น “Save as PDF / บันทึกเป็น PDF”`; };
+$('#cat').onchange = draw; $('#per').onchange = draw;
+$('#pdf').onclick = async () => { $('#info').textContent = 'กำลังเตรียมรูป…'; await ebookReady($('#book')); try { window.print(); } catch (e) { $('#info').textContent = 'เบราว์เซอร์นี้สั่งพิมพ์ไม่ได้ ลองเปิดใน Chrome หรือ Safari'; } };
+loadProducts().then(ps => {
+  all = ps;
+  [...new Set(ps.filter(p => !p.hidden).map(p => p.category).filter(Boolean))].forEach(c => $('#cat').insertAdjacentHTML('beforeend', `<option>${esc(c)}</option>`));
+  draw();
+}).catch(e => $('#info').textContent = e.message);
+}
+</script>
+</body>
+</html>

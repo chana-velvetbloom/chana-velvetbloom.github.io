@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>จัดการสินค้า · C.HANA</title>
+<link rel="icon" href="assets/logo.png">
+<link rel="stylesheet" href="assets/fonts.css">
+<link rel="stylesheet" href="assets/ebook.css">
+<style>
+/* VOICE: calm back-office for a shop owner — plain and friendly
+   IDEA: a stock ledger: one row per product, a form card to edit
+   PICTURE: the product list itself, with thumbnails
+   COLOUR+TYPE: same sage / butter / cream as the storefront · Mitr + Sarabun
+   LAYOUT: top bar with save actions, steps strip, list, edit dialog */
+:root{color-scheme:light dark;--bg:light-dark(#FBF8EF,#1b1f17);--card:light-dark(#fff,#252b20);--ink:light-dark(#3E4A33,#EEF1E6);--mute:light-dark(#7d8772,#a9b39d);--g:light-dark(#6E8F52,#9DBE7F);--gd:light-dark(#56733f,#b9d69c);--gl:light-dark(#E3ECD6,#2f3a27);--y:#F5D76E;--line:light-dark(#ECE6D6,#343c2c);--red:#c4493b}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Sarabun,system-ui,sans-serif}
+h1,h2,h3{font-family:Mitr,sans-serif;font-weight:500;margin:0;line-height:1.2}
+button,input,select,textarea{font:inherit;color:inherit}
+.wrap{max-width:1100px;margin:0 auto;padding:0 max(4vw,16px)}
+.top{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding-block:12px}
+.top img{width:44px}
+.top h1{font-size:19px;margin-right:auto}
+.btn{min-height:44px;padding:0 16px;border-radius:999px;border:1px solid var(--line);background:var(--card);cursor:pointer;font-family:Mitr;font-size:14.5px;display:inline-flex;align-items:center;gap:6px;text-decoration:none}
+.btn.pri{background:var(--g);border-color:var(--g);color:#fff}
+.btn.warn{color:var(--red)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--y);outline-offset:2px}
+.dirty{background:var(--y);color:#3E4A33;border-radius:999px;padding:4px 12px;font-size:13px;font-family:Mitr;display:none}
+.dirty.on{display:inline-block}
+.steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:20px 0}
+.step{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px;font-size:14.5px}
+.step b{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--y);color:#3E4A33;font-family:Mitr;margin-right:6px}
+.tools{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 14px}
+.tools input[type=search]{flex:1 1 240px;min-height:44px;border-radius:999px;border:1px solid var(--line);background:var(--card);padding:0 16px;font-size:16px}
+.list{display:flex;flex-direction:column;gap:8px;padding-bottom:40px}
+.it{display:grid;grid-template-columns:64px minmax(0,1fr) auto auto;gap:14px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:10px 12px}
+.it.hid{opacity:.55}
+.th{width:64px;height:64px;border-radius:12px;background:var(--gl) center/cover}
+.it .cd{font-family:Mitr;font-size:12px;color:var(--g)}
+.it .nm{font-family:Mitr;font-size:16px}
+.it .meta{font-size:13.5px;color:var(--mute)}
+.pr{font-family:Mitr;white-space:nowrap}
+.acts{display:flex;gap:6px}
+.sw{min-width:84px}
+dialog{border:0;border-radius:22px;padding:0;width:min(760px,96vw);max-height:92dvh;overflow:auto;background:var(--card);color:var(--ink)}
+dialog::backdrop{background:rgba(30,40,25,.55)}
+form{padding:22px}
+.fg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 14px;margin-top:14px}
+.fg .full{grid-column:1/-1}
+label{display:flex;flex-direction:column;gap:4px;font-size:14px;color:var(--mute)}
+label input,label select,label textarea{min-height:44px;border:1px solid var(--line);border-radius:12px;background:var(--bg);padding:8px 12px;font-size:16px;color:var(--ink)}
+textarea{min-height:90px;resize:vertical}
+.flags{display:flex;gap:14px;flex-wrap:wrap}
+.flags label{flex-direction:row;align-items:center;gap:6px;color:var(--ink);font-size:15px}
+.flags input{width:20px;height:20px;min-height:0}
+.imgs{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
+.im{position:relative;width:96px;height:96px;border-radius:12px;background:var(--gl) center/cover;border:2px solid var(--line)}
+.im:first-child{border-color:var(--g)}
+.im .b{position:absolute;bottom:4px;display:flex;gap:4px;left:4px;right:4px;justify-content:space-between}
+.im button{width:30px;height:30px;border-radius:50%;border:0;background:rgba(255,255,255,.92);color:#333;cursor:pointer;font-size:15px;padding:0}
+.im .main{position:absolute;top:4px;left:4px;background:var(--g);color:#fff;font-size:11px;font-family:Mitr;border-radius:999px;padding:1px 8px}
+.drop{width:96px;height:96px;border-radius:12px;border:2px dashed var(--g);display:grid;place-items:center;text-align:center;font-size:13px;color:var(--gd);cursor:pointer;background:var(--bg)}
+.foot{display:flex;gap:10px;justify-content:flex-end;margin-top:18px;flex-wrap:wrap}
+.err{color:var(--red);font-size:14px;min-height:1.2em}
+.note{font-size:13.5px;color:var(--mute)}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:999px;font-size:14px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:50}
+.toast.on{opacity:1}
+#ebx{position:fixed;inset:0;z-index:40;background:#e9e6dc;overflow:auto;display:none}
+#ebx.on{display:block}
+#ebx .tb{position:sticky;top:0;z-index:2;background:var(--bg);border-bottom:1px solid var(--line);display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:10px max(4vw,14px)}
+#ebx .tb h2{font-size:18px;margin-right:auto}
+#ebx .tb select{min-height:44px;border-radius:999px;border:1px solid var(--line);background:var(--card);padding:0 14px;font-size:15px}
+#ebx .tb small{flex-basis:100%;color:var(--mute);font-size:13px}
+#ebBook{padding:18px 0}
+@media(max-width:600px){#ebBook{zoom:.62}}
+@media print{body.eb-on>*:not(#ebx){display:none!important}body.eb-on #ebx{position:static;overflow:visible;background:#fff}}
+.help{background:var(--gl);border-radius:16px;padding:14px 18px;font-size:14.5px;margin-bottom:28px}
+.help summary{cursor:pointer;font-family:Mitr;color:var(--gd)}
+.help ol{margin:8px 0 0;padding-left:1.3em}
+@media(max-width:640px){.steps{grid-template-columns:1fr}.fg{grid-template-columns:1fr}.it{grid-template-columns:56px minmax(0,1fr);}.it .th{width:56px;height:56px}.it .pr,.it .acts{grid-column:2}}
+</style>
+</head>
+<body>
+<div class="top"><div class="wrap">
+  <img src="assets/logo.png" alt="">
+  <h1>จัดการสินค้า</h1>
+  <span class="dirty" id="dirty">มีการแก้ไขที่ยังไม่ได้บันทึก</span>
+  <a class="btn" href="index.html" target="_blank" rel="noopener">ดูหน้าร้าน</a>
+  <button class="btn" id="ebBtn">สร้าง eBook PDF</button>
+  <button class="btn pri" id="save">บันทึกเป็นไฟล์</button>
+</div></div>
+
+<div class="wrap">
+  <div class="steps">
+    <div class="step"><b>1</b>เพิ่มหรือแก้สินค้า อัปรูป ใส่ราคา</div>
+    <div class="step"><b>2</b>กด <b style="all:unset;font-family:Mitr">บันทึกเป็นไฟล์</b> จะได้ไฟล์ <code>catalog-update.zip</code></div>
+    <div class="step"><b>3</b>แตก zip แล้วอัปโหลดโฟลเดอร์ <code>data</code> และ <code>images</code> ขึ้นเว็บ (ดูวิธีด้านล่าง)</div>
+  </div>
+
+  <div class="tools">
+    <input type="search" id="q" placeholder="ค้นหารหัส ชื่อ หมวด" aria-label="ค้นหา">
+    <button class="btn pri" id="add">+ เพิ่มสินค้า</button>
+    <label class="btn" style="flex-direction:row;color:var(--ink);font-size:14.5px">นำเข้า CSV<input type="file" id="imp" accept=".csv,text/csv" hidden></label>
+    <button class="btn" id="csvOnly">ดาวน์โหลด CSV อย่างเดียว</button>
+  </div>
+  <div class="list" id="list"><div class="note">กำลังโหลด…</div></div>
+
+  <details class="help">
+    <summary>วิธีอัปโหลดขึ้นเว็บ (GitHub Pages)</summary>
+    <ol>
+      <li>เปิด repository ของเว็บใน github.com แล้วกด <b>Add file → Upload files</b></li>
+      <li>ลากโฟลเดอร์ <code>data</code> และ <code>images</code> ที่แตกจาก zip มาวาง ไฟล์เดิมชื่อเดียวกันจะถูกแทนที่</li>
+      <li>กด <b>Commit changes</b> รอประมาณ 1–2 นาที หน้าเว็บจะอัปเดตเอง</li>
+    </ol>
+    <p class="note">รูปที่อัปผ่านหน้านี้จะถูกย่อเป็น JPG กว้างไม่เกิน 1200px และตั้งชื่อตามรหัสสินค้าให้อัตโนมัติ (เช่น CH-106-1.jpg) ส่วนไฟล์ CSV เปิดแก้ใน Excel ได้ แล้วกด “นำเข้า CSV” กลับมา</p>
+  </details>
+</div>
+
+<dialog id="dlg"><form id="f" method="dialog">
+  <h2 id="ft">แก้ไขสินค้า</h2>
+  <div class="fg">
+    <label>รหัสสินค้า *<input name="code" required></label>
+    <label>หมวดหมู่ *<input name="category" list="cats" required></label>
+    <label class="full">ชื่อสินค้า *<input name="name" required></label>
+    <label>ชื่อภาษาอังกฤษ<input name="name_en"></label>
+    <label>ราคา (บาท) — เว้นว่าง = “สอบถามราคา”<input name="price" inputmode="decimal"></label>
+    <label>ขนาด<input name="size" placeholder="เช่น กว้าง 12 × สูง 15 ซม."></label>
+    <label>สี<input name="colors"></label>
+    <label class="full">วัสดุ<input name="materials" placeholder="เช่น ลวดกำมะหยี่ · ไม้"></label>
+    <label class="full">รายละเอียด<textarea name="description"></textarea></label>
+    <div class="full"><div class="note" style="margin-bottom:6px">ป้ายกำกับ</div>
+      <div class="flags"><label><input type="checkbox" name="f_new"> มาใหม่</label><label><input type="checkbox" name="f_featured"> แนะนำ</label><label><input type="checkbox" name="f_custom"> สั่งทำได้</label><label><input type="checkbox" name="hide"> ซ่อนจากหน้าร้าน</label></div></div>
+    <label>ลำดับที่แสดง<input name="sort" inputmode="numeric"></label>
+    <div class="full"><div class="note">รูปสินค้า — รูปแรกคือรูปหน้าปก (กดลูกศรเพื่อสลับลำดับ)</div>
+      <div class="imgs" id="imgs"></div></div>
+  </div>
+  <div class="err" id="err"></div>
+  <div class="foot"><button type="button" class="btn warn" id="del">ลบสินค้านี้</button><span style="flex:1"></span><button type="button" class="btn" id="cancel">ยกเลิก</button><button type="submit" class="btn pri">ตกลง</button></div>
+</form></dialog>
+<datalist id="cats"></datalist>
+<input type="file" id="pick" accept="image/*" multiple hidden>
+<div id="ebx" aria-label="ตัวอย่าง eBook">
+  <div class="tb no-print"><h2>ตัวอย่าง eBook (A5)</h2>
+    <select id="ebCat" aria-label="เลือกหมวด"><option value="">ทั้งร้าน</option></select>
+    <select id="ebPer" aria-label="จำนวนต่อหน้า"><option value="12">12 ชิ้น/หน้า</option><option value="9">9 ชิ้น/หน้า</option><option value="6">6 ชิ้น/หน้า</option><option value="4">4 ชิ้น/หน้า (รูปใหญ่)</option></select>
+    <button class="btn pri" id="ebPdf">บันทึกเป็น PDF</button><button class="btn" id="ebClose">ปิด</button>
+    <small id="ebInfo"></small></div>
+  <div id="ebBook"></div>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script src="assets/jszip.min.js"></script>
+<script src="assets/common.js"></script>
+<script src="assets/ebook.js"></script>
+<script>
+{
+const $ = s => document.querySelector(s);
+let items = [], edit = null, work = null, dirty = false, askDel = false;
+const newBlobs = new Map(); // filename -> Blob (รูปที่อัปใหม่)
+const urlOf = f => newBlobs.has(f) ? (newBlobs.get(f).__url ||= URL.createObjectURL(newBlobs.get(f))) : SHOP.imageDir + encodeURIComponent(f);
+function toast(t) { const e = $('#toast'); e.textContent = t; e.classList.add('on'); clearTimeout(toast.t); toast.t = setTimeout(() => e.classList.remove('on'), 2200); }
+function setDirty(v) { dirty = v; $('#dirty').classList.toggle('on', v); }
+window.addEventListener('beforeunload', e => { if (dirty) { e.preventDefault(); e.returnValue = ''; } });
+
+function render() {
+  const q = $('#q').value.toLowerCase().trim();
+  const r = items.filter(p => !q || [p.code, p.name, p.category].join(' ').toLowerCase().includes(q));
+  $('#cats').innerHTML = [...new Set(items.map(p => p.category).filter(Boolean))].map(c => `<option value="${esc(c)}">`).join('');
+  $('#list').innerHTML = r.length ? r.map(p => `<div class="it ${p.hidden ? 'hid' : ''}">
+    <div class="th" style="background-image:url('${p.imgs[0] ? urlOf(p.imgs[0]) : 'assets/logo.png'}')"></div>
+    <div><div class="cd">${esc(p.code)} · ${esc(p.category)}${p.hidden ? ' · ซ่อนอยู่' : ''}</div><div class="nm">${esc(p.name)}</div><div class="meta">${p.imgs.length} รูป${p.flagList.length ? ' · ' + p.flagList.map(f => FLAG_LABEL[f] || f).join(', ') : ''}</div></div>
+    <div class="pr">${p.priceNum ? '฿' + p.priceNum.toLocaleString('th-TH') : '<span class="note">ยังไม่ใส่ราคา</span>'}</div>
+    <div class="acts"><button class="btn sw" data-h="${esc(p.code)}">${p.hidden ? 'แสดง' : 'ซ่อน'}</button><button class="btn" data-e="${esc(p.code)}">แก้ไข</button></div>
+  </div>`).join('') : '<div class="note">ยังไม่มีสินค้า กด “+ เพิ่มสินค้า” ได้เลย</div>';
+}
+function nextCode() {
+  const n = items.map(p => +(p.code.match(/(\d+)$/) || [0, 0])[1]).reduce((a, b) => Math.max(a, b), 0);
+  return 'CH-' + String(n + 1).padStart(3, '0');
+}
+function open(p) {
+  edit = p; askDel = false;
+  work = p ? { ...p, imgs: [...p.imgs] } : normalize({ code: nextCode(), status: 'show', sort: String(items.length + 1) });
+  const f = $('#f');
+  ['code', 'category', 'name', 'name_en', 'price', 'size', 'colors', 'materials', 'description', 'sort'].forEach(k => f[k].value = work[k] || '');
+  ['new', 'featured', 'custom'].forEach(k => f['f_' + k].checked = work.flagList.includes(k));
+  f.hide.checked = work.hidden;
+  $('#ft').textContent = p ? 'แก้ไขสินค้า ' + p.code : 'เพิ่มสินค้าใหม่';
+  $('#del').style.display = p ? '' : 'none'; $('#del').textContent = 'ลบสินค้านี้';
+  $('#err').textContent = '';
+  drawImgs(); $('#dlg').showModal();
+}
+function drawImgs() {
+  $('#imgs').innerHTML = work.imgs.map((f, i) => `<div class="im" style="background-image:url('${urlOf(f)}')">${i === 0 ? '<span class="main">ปก</span>' : ''}
+    <div class="b"><button type="button" data-l="${i}" aria-label="เลื่อนไปซ้าย">‹</button><button type="button" data-x="${i}" aria-label="ลบรูป">×</button></div></div>`).join('')
+    + `<button type="button" class="drop" id="addImg">+ เพิ่มรูป<br><small>เลือกได้หลายรูป</small></button>`;
+}
+$('#imgs').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  if (b.id === 'addImg') return $('#pick').click();
+  if (b.dataset.x != null) work.imgs.splice(+b.dataset.x, 1);
+  if (b.dataset.l != null) { const i = +b.dataset.l; if (i > 0) [work.imgs[i - 1], work.imgs[i]] = [work.imgs[i], work.imgs[i - 1]]; }
+  drawImgs();
+});
+async function shrink(file) {
+  const bmp = await createImageBitmap(file, { imageOrientation: 'from-image' }).catch(() => null);
+  if (!bmp) throw new Error('อ่านรูป ' + file.name + ' ไม่ได้ (ถ้าเป็น .HEIC ให้ส่งออกเป็น JPG จากมือถือก่อน)');
+  const s = Math.min(1, 1200 / Math.max(bmp.width, bmp.height));
+  const c = document.createElement('canvas'); c.width = Math.round(bmp.width * s); c.height = Math.round(bmp.height * s);
+  c.getContext('2d').drawImage(bmp, 0, 0, c.width, c.height);
+  return new Promise(r => c.toBlob(r, 'image/jpeg', 0.84));
+}
+$('#pick').addEventListener('change', async e => {
+  const code = ($('#f').code.value.trim() || 'NEW').replace(/[^\w-]/g, '');
+  for (const file of e.target.files) {
+    try {
+      const blob = await shrink(file);
+      let n = 1, name; const used = new Set([...items.flatMap(p => p.imgs), ...work.imgs, ...newBlobs.keys()]);
+      do name = `${code}-${n++}.jpg`; while (used.has(name));
+      newBlobs.set(name, blob); work.imgs.push(name);
+    } catch (err) { $('#err').textContent = err.message; }
+  }
+  e.target.value = ''; drawImgs();
+});
+$('#f').addEventListener('submit', e => {
+  e.preventDefault(); const f = e.target;
+  const code = f.code.value.trim();
+  if (items.some(p => p.code === code && p !== edit)) { $('#err').textContent = 'รหัส ' + code + ' มีอยู่แล้ว'; return; }
+  const raw = {}; ['code', 'category', 'name', 'name_en', 'price', 'size', 'colors', 'materials', 'description', 'sort'].forEach(k => raw[k] = f[k].value.trim());
+  raw.flags = ['new', 'featured', 'custom'].filter(k => f['f_' + k].checked).join('|');
+  raw.status = f.hide.checked ? 'hide' : 'show';
+  raw.images = work.imgs.join('|');
+  const p = normalize(raw);
+  if (edit) items[items.indexOf(edit)] = p; else items.push(p);
+  setDirty(true); $('#dlg').close(); render(); toast('อัปเดตแล้ว อย่าลืมกด “บันทึกเป็นไฟล์”');
+});
+$('#cancel').onclick = () => $('#dlg').close();
+$('#del').onclick = () => {
+  if (!askDel) { askDel = true; $('#del').textContent = 'กดอีกครั้งเพื่อยืนยันการลบ'; return; }
+  items.splice(items.indexOf(edit), 1); setDirty(true); $('#dlg').close(); render(); toast('ลบแล้ว');
+};
+$('#list').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  if (b.dataset.e) open(items.find(p => p.code === b.dataset.e));
+  if (b.dataset.h) { const p = items.find(x => x.code === b.dataset.h); p.hidden = !p.hidden; p.status = p.hidden ? 'hide' : 'show'; setDirty(true); render(); }
+});
+$('#add').onclick = () => open(null);
+$('#q').oninput = render;
+$('#imp').addEventListener('change', async e => {
+  const file = e.target.files[0]; if (!file) return;
+  const list = parseCSV(await file.text()).map(normalize).filter(p => p.code);
+  if (!list.length) return toast('ไม่พบข้อมูลในไฟล์ (ต้องมีหัวคอลัมน์ code, name …)');
+  items = list; setDirty(true); render(); toast('นำเข้า ' + list.length + ' รายการ'); e.target.value = '';
+});
+function serial() { return items.map(p => ({ ...p, images: p.imgs.join('|'), flags: p.flagList.join('|') })); }
+function download(blob, name) {
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+}
+$('#csvOnly').onclick = () => download(new Blob([toCSV(serial())], { type: 'text/csv;charset=utf-8' }), 'products.csv');
+$('#save').onclick = async () => {
+  if (typeof JSZip !== 'function') return toast('โหลดตัวสร้างไฟล์ zip ไม่ได้ ลองเชื่อมต่ออินเทอร์เน็ตแล้วรีเฟรช');
+  const z = new JSZip(); z.file('data/products.csv', toCSV(serial()));
+  const used = new Set(items.flatMap(p => p.imgs)); let n = 0;
+  for (const [name, blob] of newBlobs) if (used.has(name)) { z.file('images/' + name, blob); n++; }
+  download(await z.generateAsync({ type: 'blob' }), 'catalog-update.zip');
+  setDirty(false); toast('ได้ไฟล์แล้ว: ข้อมูล ' + items.length + ' รายการ + รูปใหม่ ' + n + ' รูป');
+};
+function ebDraw() { const r = renderEbook($('#ebBook'), items, { category: $('#ebCat').value, perPage: $('#ebPer').value, imgUrl: urlOf }); $('#ebInfo').textContent = `${r.items} รายการ · ${r.pages} หน้า — ใช้ข้อมูลล่าสุดในหน้านี้ (รวมที่ยังไม่ได้บันทึก) · กด “บันทึกเป็น PDF” แล้วเลือก “Save as PDF”`; }
+$('#ebBtn').onclick = () => {
+  const cats = [...new Set(items.filter(p => !p.hidden).map(p => p.category).filter(Boolean))];
+  const cur = $('#ebCat').value; $('#ebCat').innerHTML = '<option value="">ทั้งร้าน</option>' + cats.map(c => `<option>${esc(c)}</option>`).join(''); if (cats.includes(cur)) $('#ebCat').value = cur;
+  ebDraw(); $('#ebx').classList.add('on'); document.body.classList.add('eb-on');
+};
+$('#ebCat').onchange = ebDraw; $('#ebPer').onchange = ebDraw;
+$('#ebClose').onclick = () => { $('#ebx').classList.remove('on'); document.body.classList.remove('eb-on'); };
+$('#ebPdf').onclick = async () => { $('#ebInfo').textContent = 'กำลังเตรียมรูป…'; await ebookReady($('#ebBook')); $('#ebInfo').textContent = ''; try { window.print(); } catch (e) { toast('เบราว์เซอร์นี้สั่งพิมพ์ไม่ได้ ลองเปิดใน Chrome หรือ Safari'); } };
+loadProducts().then(ps => { items = ps; render(); }).catch(() => { items = []; render(); toast('ยังไม่มีไฟล์ข้อมูล เริ่มเพิ่มสินค้าได้เลย'); });
+}
+</script>
+</body>
+</html>

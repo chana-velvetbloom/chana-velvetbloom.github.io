@@ -1,0 +1,80 @@
+/* eBook (A5) — ใช้ร่วมกันระหว่าง ebook.html และ admin.html */
+@page{size:148mm 210mm;margin:0}
+.eb{--g:#6E8F52;--gd:#56733f;--gl:#E3ECD6;--y:#F5D76E;--yl:#FCF1C8;--c:#FBF8EF;--t:#3E4A33;--mu:#7d8772;font-family:Sarabun,sans-serif;color:var(--t);-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.eb *{box-sizing:border-box}
+.eb .pg{width:148mm;height:210mm;position:relative;overflow:hidden;background:var(--c);padding:12mm 11mm 16mm;margin:0 auto 8mm;box-shadow:0 4px 18px rgba(0,0,0,.12);break-after:page;page-break-after:always}
+.eb h1,.eb h2,.eb h3,.eb .m{font-family:Mitr,sans-serif;font-weight:500;margin:0;line-height:1.25}
+.eb .ft{position:absolute;left:11mm;right:11mm;bottom:7mm;display:flex;justify-content:space-between;font:8pt Mitr,sans-serif;color:var(--g);border-top:1px solid #d9e3cc;padding-top:2.2mm}
+.eb .pill{display:inline-block;background:var(--yl);border-radius:99px;padding:1mm 3.5mm;font:9pt Mitr,sans-serif}
+/* cover */
+.eb .cover{padding:0}
+.eb .cover .hero{position:absolute;inset:0 0 80mm 0;width:100%;height:130mm;object-fit:cover}
+.eb .cover .fade{position:absolute;left:0;right:0;top:90mm;height:40mm;background:linear-gradient(rgba(251,248,239,0),var(--c))}
+.eb .cover .logo{position:absolute;left:50%;top:100mm;transform:translateX(-50%);width:64mm;filter:drop-shadow(0 1.5mm 3mm rgba(0,0,0,.15))}
+.eb .cover .tx{position:absolute;left:0;right:0;bottom:14mm;text-align:center}
+.eb .cover h1{font-size:16pt;color:var(--g)}
+.eb .cover p{font-size:10pt;margin:1.5mm 0 0}
+.eb .cover .ed{font-size:8.5pt;color:var(--mu);margin-top:3mm}
+/* about */
+.eb .about h2,.eb .toc h2{font-size:18pt;color:var(--g);margin:4mm 0 5mm}
+.eb .about p{font-size:11pt;line-height:1.75;margin:0 0 4mm}
+.eb .steps{display:flex;gap:3mm;margin:6mm 0}
+.eb .st{flex:1;background:#fff;border:1px solid #d9e3cc;border-radius:5mm;padding:4mm 2mm;text-align:center;font-size:9.5pt;line-height:1.5}
+.eb .st b{display:block;width:8mm;height:8mm;line-height:8mm;margin:0 auto 2mm;border-radius:50%;background:var(--y);font-family:Mitr;font-weight:500}
+.eb .qb{display:flex;gap:6mm;align-items:center;background:#fff;border:2px dashed #d9e3cc;border-radius:6mm;padding:5mm}
+.eb .qb img{width:32mm;height:32mm}
+/* toc */
+.eb .row{display:flex;align-items:center;gap:4mm;padding:3.6mm 0;border-bottom:1px dotted #cfdcc0;font-size:12pt}
+.eb .row .n{font-family:Mitr;color:var(--g);width:9mm}
+.eb .row .s{display:block;font-size:9pt;color:var(--mu)}
+.eb .row .d{margin-left:auto;font-family:Mitr;color:var(--g)}
+/* grid */
+.eb .gh{margin-bottom:4.5mm}
+.eb .gh .k{font:8pt Mitr,sans-serif;letter-spacing:1.5px;color:var(--g)}
+.eb .gh h2{font-size:16pt;margin:.5mm 0}
+.eb .gh p{font-size:9pt;color:var(--mu);margin:0}
+.eb .gh.sm h2{font-size:12pt;color:var(--g)}
+.eb .cards{display:grid;grid-template-columns:1fr 1fr;gap:4mm}
+.eb .cd{background:#fff;border:1px solid #ece6d6;border-radius:4mm;overflow:hidden}
+.eb .cd img{display:block;width:100%;height:50mm;object-fit:cover;object-position:center 70%;background:var(--gl)}
+.eb .cd .b{padding:2.4mm 3mm 3mm}
+.eb .cd .c{font:7pt Mitr,sans-serif;color:var(--g);letter-spacing:.8px;display:flex;justify-content:space-between;gap:2mm}
+.eb .cd .c i{font-style:normal;background:var(--y);color:var(--t);border-radius:99px;padding:0 2mm;letter-spacing:0}
+.eb .cd h3{font-size:10.5pt;margin:.6mm 0 .8mm}
+.eb .cd .ds{font-size:8pt;line-height:1.45;color:#6b7563;height:11.6mm;overflow:hidden;margin:0}
+.eb .cd .pr{font:500 10pt Mitr,sans-serif;color:var(--gd);margin-top:1.2mm}
+.eb .cd .pr.ask{font-size:8pt;font-weight:400;color:var(--mu)}
+/* 6 และ 9 ชิ้นต่อหน้า */
+.eb .cards.n6,.eb .cards.n9{grid-template-columns:repeat(3,1fr);gap:3mm}
+.eb .cards.n6 .cd img{height:40mm}
+.eb .cards.n9 .cd img{height:30mm}
+.eb .cards.n6 .cd .b,.eb .cards.n9 .cd .b{padding:1.8mm 2.2mm 2.2mm}
+.eb .cards.n6 h3,.eb .cards.n9 h3{font-size:8.8pt;line-height:1.25}
+.eb .cards.n6 .ds{font-size:7pt;line-height:1.4;height:7mm}
+.eb .cards.n9 .ds{display:none}
+.eb .cards.n6 .pr,.eb .cards.n9 .pr{font-size:8.5pt}
+.eb .cards.n6 .pr.ask,.eb .cards.n9 .pr.ask{font-size:6.8pt}
+.eb .cards.n6 .c,.eb .cards.n9 .c{font-size:6.3pt}
+/* 12 ชิ้นต่อหน้า (3 × 4) */
+.eb .cards.n12{grid-template-columns:repeat(3,1fr);gap:2.6mm}
+.eb .cards.n12 .cd{border-radius:3mm}
+.eb .cards.n12 .cd img{height:21mm}
+.eb .cards.n12 .cd .b{padding:1.4mm 2mm 1.8mm}
+.eb .cards.n12 .c{font-size:6pt}
+.eb .cards.n12 .c i{padding:0 1.4mm}
+.eb .cards.n12 h3{font-size:8pt;line-height:1.3;margin:.3mm 0 .2mm;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.eb .cards.n12 .ds{display:none}
+.eb .cards.n12 .pr{font-size:8pt;margin-top:0;line-height:1.3}
+.eb .cards.n12 .pr.ask{font-size:6.5pt}
+/* back */
+.eb .back{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.eb .back .logo{width:46mm;margin-bottom:7mm}
+.eb .back h2{color:var(--g);font-size:16pt}
+.eb .back .qr{width:48mm;height:48mm;margin:6mm 0 3mm;border:3mm solid #fff;border-radius:4mm;box-shadow:0 0 0 1px #d9e3cc}
+@media print{
+  html,body{margin:0!important;padding:0!important;background:#fff!important}
+  .eb .pg{margin:0;box-shadow:none}
+  .no-print{display:none!important}
+  #book,#ebBook{padding:0!important;zoom:1!important}
+  .eb .pg:last-child{break-after:auto;page-break-after:auto}
+}

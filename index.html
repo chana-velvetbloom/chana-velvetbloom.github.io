@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>C.HANA Velvet Bloom</title>
+<meta name="description" content="แคตตาล็อกงานลวดกำมะหยี่ทำมือ ตุ๊กตา ดอกไม้ ของตกแต่ง และของขวัญ จาก C.HANA Velvet Bloom">
+<meta property="og:title" content="C.HANA Velvet Bloom · Catalog">
+<meta property="og:image" content="assets/hero.jpg">
+<link rel="icon" href="assets/logo.png">
+<link rel="stylesheet" href="assets/fonts.css">
+<style>
+/* VOICE: warm, gentle, handmade gift shop — soft and airy
+   IDEA: a little gift-shop shelf card; each product is a tag-card
+   PICTURE: real group photo of the dolls on fluffy white, framed like a shop window
+   COLOUR+TYPE: sage green (logo) dominant, butter yellow accent, cream ground · Mitr + Sarabun
+   LAYOUT: header, window hero, sticky search/filter bar, card grid, product sheet, share band */
+:root{color-scheme:light dark;
+ --bg:light-dark(#FBF8EF,#1b1f17);--card:light-dark(#fff,#252b20);--ink:light-dark(#3E4A33,#EEF1E6);--mute:light-dark(#7d8772,#a9b39d);
+ --g:light-dark(#6E8F52,#9DBE7F);--gd:light-dark(#56733f,#b9d69c);--gl:light-dark(#E3ECD6,#2f3a27);--y:#F5D76E;--yl:light-dark(#FCF1C8,#4a4223);--line:light-dark(#ECE6D6,#343c2c)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 Sarabun,system-ui,sans-serif;overflow-x:clip}
+h1,h2,h3,.m{font-family:Mitr,Sarabun,sans-serif;font-weight:500;line-height:1.2;margin:0}
+a{color:inherit}
+button,input,select{font:inherit;color:inherit}
+.wrap{max-width:1180px;margin:0 auto;padding:0 max(4vw,16px)}
+/* header */
+header{display:flex;align-items:center;gap:12px;padding:12px 0}
+header img{width:58px;height:auto}
+header .nm{font-family:Mitr;font-size:18px;color:var(--gd);line-height:1.1}
+header .nm small{display:block;font-family:Sarabun;font-size:13px;color:var(--mute)}
+.btn{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 18px;border-radius:999px;border:0;cursor:pointer;text-decoration:none;font-family:Mitr;font-size:15px}
+.btn.line{background:#06C755;color:#fff;margin-left:auto}
+.btn.soft{background:var(--gl);color:var(--gd)}
+.btn:focus-visible,input:focus-visible,select:focus-visible,.chip:focus-visible,.card:focus-visible{outline:3px solid var(--y);outline-offset:2px}
+/* hero */
+.hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);gap:clamp(20px,4vw,48px);align-items:center;padding:clamp(12px,3vw,32px) 0 clamp(24px,4vw,48px)}
+.hero h1{font-size:clamp(32px,4.6vw,50px);text-wrap:balance;color:var(--gd)}
+.hero p{color:var(--mute);margin:14px 0 22px;max-width:34em}
+.win{position:relative;border-radius:28px;overflow:hidden;aspect-ratio:4/3;background:var(--gl) url(assets/hero.jpg) center 55%/cover;box-shadow:0 18px 40px -24px rgba(60,80,40,.45)}
+.win::after{content:"";position:absolute;inset:0;border:10px solid var(--card);border-radius:28px;pointer-events:none}
+.stamp{position:absolute;right:22px;bottom:22px;background:var(--y);color:#3E4A33;border-radius:50%;width:104px;height:104px;display:grid;place-items:center;text-align:center;font-family:Mitr;font-size:14px;line-height:1.25;transform:rotate(-8deg);box-shadow:0 6px 14px rgba(0,0,0,.15)}
+.stats{display:flex;gap:22px;flex-wrap:wrap;font-size:14px;color:var(--mute)}
+.stats b{display:block;font-family:Mitr;font-size:24px;color:var(--ink);font-weight:500}
+/* toolbar */
+.bar{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:12px 0}
+.bar .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.search{flex:1 1 260px;display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:0 16px;min-height:46px}
+.search input{border:0;background:none;outline:0;width:100%;font-size:16px}
+select{min-height:46px;border-radius:999px;border:1px solid var(--line);background:var(--card);padding:0 14px;font-size:15px}
+.chips{display:flex;gap:8px;overflow-x:auto;padding-top:10px;scrollbar-width:none}
+.chip{flex:none;min-height:40px;padding:0 16px;border-radius:999px;border:1px solid var(--line);background:var(--card);cursor:pointer;font-family:Mitr;font-size:14px;white-space:nowrap}
+.chip[aria-pressed=true]{background:var(--g);border-color:var(--g);color:#fff}
+.chip small{opacity:.7;margin-left:4px}
+/* grid */
+main{padding:22px 0 40px}
+.sec{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:18px 0 14px}
+.sec h2{font-size:22px}.sec span{color:var(--mute);font-size:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,180px),1fr));gap:18px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;overflow:hidden;cursor:pointer;text-align:left;padding:0;display:flex;flex-direction:column;transition:transform .2s,box-shadow .2s}
+.card:hover{transform:translateY(-3px);box-shadow:0 14px 28px -18px rgba(60,80,40,.5)}
+.ph{position:relative;aspect-ratio:1;background:var(--gl) center/cover}
+.tags{position:absolute;left:10px;top:10px;display:flex;gap:6px;flex-wrap:wrap}
+.tag{background:var(--y);color:#3E4A33;font-family:Mitr;font-size:12px;padding:3px 10px;border-radius:999px}
+.tag.featured{background:var(--g);color:#fff}.tag.custom{background:#fff;color:var(--gd)}
+.cnt{position:absolute;right:10px;bottom:10px;background:rgba(0,0,0,.45);color:#fff;font-size:12px;padding:2px 8px;border-radius:999px}
+.cb{padding:12px 14px 16px;display:flex;flex-direction:column;gap:2px;flex:1}
+.cd{font-family:Mitr;font-size:12px;color:var(--g);letter-spacing:.04em}
+.cb h3{font-size:16.5px}
+.pr{margin-top:auto;padding-top:8px;font-family:Mitr;font-size:16px;color:var(--gd);white-space:nowrap}
+.pr.ask{font-size:14px;color:var(--mute)}
+.empty{grid-column:1/-1;text-align:center;padding:48px 16px;color:var(--mute)}
+/* modal */
+dialog{border:0;padding:0;border-radius:24px;max-width:min(920px,94vw);width:100%;max-height:92dvh;overflow:auto;overscroll-behavior:contain;background:var(--card);color:var(--ink)}
+dialog::backdrop{background:rgba(30,40,25,.55)}
+.sheet{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr)}
+.gal{padding:16px}
+.big{aspect-ratio:1;border-radius:16px;background:var(--gl) center/cover;touch-action:pan-y}
+.thumbs{display:flex;gap:8px;margin-top:10px;overflow-x:auto}
+.thumbs button{flex:none;width:64px;height:64px;border-radius:12px;border:2px solid transparent;background:center/cover;cursor:pointer;padding:0}
+.thumbs button[aria-current=true]{border-color:var(--g)}
+.info{padding:24px 24px 24px 8px;display:flex;flex-direction:column;gap:10px}
+.info h2{font-size:clamp(22px,3vw,28px)}
+.info .en{color:var(--mute);margin-top:-6px}
+.info .big-pr{font-family:Mitr;font-size:24px;color:var(--gd)}
+dl{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;margin:4px 0;font-size:15px}
+dt{color:var(--mute)}dd{margin:0}
+.x{position:absolute;right:12px;top:12px;width:44px;height:44px;border-radius:50%;border:0;background:var(--card);box-shadow:0 2px 8px rgba(0,0,0,.15);cursor:pointer;font-size:22px;z-index:2}
+.acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:auto}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:999px;font-size:14px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:50}
+.toast.on{opacity:1}
+/* share */
+.share{background:var(--g);color:#fff;border-radius:28px;padding:clamp(22px,4vw,40px);display:grid;grid-template-columns:auto 1fr auto;gap:clamp(16px,3vw,36px);align-items:center;margin:20px 0 34px}
+.share h2{font-size:clamp(22px,3vw,30px)}.share p{margin:6px 0 14px;opacity:.9}
+.qr{background:#fff;border-radius:18px;padding:10px;width:150px;height:150px;display:grid;place-items:center}
+.qr img,.qr canvas,.qr svg{width:130px;height:130px;display:block}
+.share .qrl{text-align:center;font-size:13px}
+.share .btn.soft{background:#fff;color:var(--gd)}
+footer{border-top:1px solid var(--line);padding:22px 0 34px;color:var(--mute);font-size:14px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+@media(max-width:760px){.sheet{grid-template-columns:1fr}.info{padding:4px 20px 22px}.share{grid-template-columns:1fr;text-align:center}.qr{margin:0 auto}}
+@media(max-width:600px){.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.cb{padding:10px 10px 12px}.cb h3{font-size:14.5px}.pr{font-size:14px}.pr.ask{font-size:12.5px}.bar .row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.search{grid-column:1/-1}select{font-size:14px;padding:0 8px;min-height:42px}.hero{grid-template-columns:1fr}.hero .win{order:-1}header .nm small{display:none}.btn.line span{display:none}.stamp{width:84px;height:84px;font-size:12px}}
+@media(prefers-reduced-motion:reduce){.card{transition:none}.card:hover{transform:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <img src="assets/logo.png" alt="โลโก้ C.HANA Velvet Bloom">
+    <div class="nm">C.HANA Velvet Bloom<small>งานลวดกำมะหยี่ทำมือ</small></div>
+    <a class="btn line" id="lineTop" href="#" target="_blank" rel="noopener">LINE <span>สอบถาม / สั่งซื้อ</span></a>
+  </header>
+  <section class="hero">
+    <div>
+      <h1>ตุ๊กตา ดอกไม้ และของขวัญ จากลวดกำมะหยี่</h1>
+      <p>เลือกดูสินค้าได้เลยค่ะ ชอบชิ้นไหน กดสอบถามราคาทาง LINE แล้วส่งรหัสสินค้ามาได้เลย</p>
+      <div class="stats"><div><b id="stCount">–</b>รายการ</div><div><b id="stCat">–</b>หมวดหมู่</div><div><b>100%</b>ทำมือ</div></div>
+    </div>
+    <div class="win" role="img" aria-label="ตุ๊กตาลวดกำมะหยี่ของร้าน วางรวมกันบนพรมขนนุ่ม"><div class="stamp">Handmade<br>ทีละชิ้น</div></div>
+  </section>
+</div>
+
+<div class="bar"><div class="wrap">
+  <div class="row">
+    <label class="search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true" style="flex:none;color:var(--mute)"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="q" type="search" placeholder="ค้นหาชื่อ รหัส สี หรือคำสำคัญ" aria-label="ค้นหาสินค้า"></label>
+    <select id="flag" aria-label="ประเภท"><option value="">ทุกประเภท</option><option value="new">มาใหม่</option><option value="featured">แนะนำ</option><option value="custom">สั่งทำได้</option></select>
+    <select id="price" aria-label="ช่วงราคา"><option value="">ทุกราคา</option><option value="0-299">ต่ำกว่า 300 บาท</option><option value="300-799">300–799 บาท</option><option value="800-1999">800–1,999 บาท</option><option value="2000-">2,000 บาทขึ้นไป</option></select>
+    <select id="sort" aria-label="เรียงลำดับ"><option value="">เรียงตามร้านแนะนำ</option><option value="pa">ราคา น้อย → มาก</option><option value="pd">ราคา มาก → น้อย</option><option value="name">ชื่อ ก–ฮ</option></select>
+  </div>
+  <div class="chips" id="chips" role="toolbar" aria-label="หมวดหมู่"></div>
+</div></div>
+
+<main class="wrap">
+  <div class="sec"><h2 id="secT">สินค้าทั้งหมด</h2><span id="secN"></span></div>
+  <div class="grid" id="grid"><div class="empty">กำลังโหลดสินค้า…</div></div>
+
+  <section class="share" aria-label="แชร์แคตตาล็อก">
+    <div class="qr" id="qrBox" aria-label="QR Code ของแคตตาล็อกนี้"></div>
+    <div>
+      <h2>แชร์แคตตาล็อกให้เพื่อน</h2>
+      <p>ให้เพื่อนสแกน QR หรือส่งลิงก์นี้ไปทาง LINE ได้เลยค่ะ</p>
+      <div class="acts"><button class="btn soft" id="copyLink">คัดลอกลิงก์</button><a class="btn line" id="lineBottom" href="#" target="_blank" rel="noopener" style="margin:0">แอด LINE ร้าน</a></div>
+    </div>
+    <div class="qrl"><div class="qr"><img src="assets/line-qr.png" alt="QR LINE ของร้าน"></div><div style="margin-top:6px">LINE: <b id="lid"></b></div></div>
+  </section>
+</main>
+
+<div class="wrap"><footer><span>© C.HANA Velvet Bloom · งานลวดกำมะหยี่ทำมือ</span><span>ราคาและขนาด สอบถามทาง LINE ได้ค่ะ · <a href="admin.html" style="color:var(--mute)">จัดการสินค้า</a></span></footer></div>
+
+<dialog id="dlg" aria-label="รายละเอียดสินค้า"><button class="x" id="dx" aria-label="ปิด">×</button><div id="dbody"></div></dialog>
+<div class="toast" id="toast" role="status"></div>
+
+<script src="assets/qrcode.js"></script>
+<script src="assets/common.js"></script>
+<script>
+{
+const $ = s => document.querySelector(s);
+let all = [], cat = '';
+const st = { q: '', flag: '', price: '', sort: '' };
+const img = f => SHOP.imageDir + encodeURIComponent(f);
+const money = p => p.priceNum ? '฿' + p.priceNum.toLocaleString('th-TH') : '';
+['lineTop', 'lineBottom'].forEach(id => $('#' + id).href = SHOP.lineUrl);
+$('#lid').textContent = SHOP.lineId;
+
+function toast(t) { const e = $('#toast'); e.textContent = t; e.classList.add('on'); clearTimeout(toast.t); toast.t = setTimeout(() => e.classList.remove('on'), 1800); }
+async function copy(t, msg) { try { await navigator.clipboard.writeText(t); toast(msg); } catch (e) { toast('คัดลอกไม่ได้ ลองกดค้างที่ลิงก์แทนนะคะ'); } }
+
+function chips() {
+  const cats = [...new Set(all.map(p => p.category).filter(Boolean))];
+  $('#stCat').textContent = cats.length; $('#stCount').textContent = all.length;
+  const n = c => all.filter(p => !c || p.category === c).length;
+  $('#chips').innerHTML = ['', ...cats].map(c => `<button class="chip" data-c="${esc(c)}" aria-pressed="${c === cat}">${c ? esc(c) : 'ทั้งหมด'}<small>${n(c)}</small></button>`).join('');
+}
+function list() {
+  const q = st.q.toLowerCase().trim();
+  let r = all.filter(p => (!cat || p.category === cat) && (!st.flag || p.flagList.includes(st.flag)));
+  if (q) r = r.filter(p => [p.code, p.name, p.name_en, p.category, p.colors, p.materials, p.description].join(' ').toLowerCase().includes(q));
+  if (st.price) { const [a, b] = st.price.split('-').map(Number); r = r.filter(p => p.priceNum && p.priceNum >= a && (!b || p.priceNum <= b)); }
+  if (st.sort === 'pa') r.sort((a, b) => (a.priceNum || 1e9) - (b.priceNum || 1e9));
+  if (st.sort === 'pd') r.sort((a, b) => b.priceNum - a.priceNum);
+  if (st.sort === 'name') r.sort((a, b) => a.name.localeCompare(b.name, 'th'));
+  return r;
+}
+function render() {
+  const r = list();
+  $('#secT').textContent = cat || 'สินค้าทั้งหมด';
+  $('#secN').textContent = r.length + ' รายการ';
+  $('#grid').innerHTML = r.length ? r.map(p => `
+    <button class="card" data-code="${esc(p.code)}" aria-label="${esc(p.name)}">
+      <div class="ph" style="background-image:url('${p.imgs[0] ? img(p.imgs[0]) : 'assets/logo.png'}')">
+        <div class="tags">${p.flagList.map(f => FLAG_LABEL[f] ? `<span class="tag ${f}">${FLAG_LABEL[f]}</span>` : '').join('')}</div>
+        ${p.imgs.length > 1 ? `<span class="cnt">${p.imgs.length} รูป</span>` : ''}
+      </div>
+      <div class="cb"><span class="cd">${esc(p.code)}</span><h3>${esc(p.name)}</h3>
+      ${money(p) ? `<span class="pr">${money(p)}</span>` : `<span class="pr ask">สอบถามราคาทาง LINE</span>`}</div>
+    </button>`).join('') : `<div class="empty">ไม่พบสินค้าที่ค้นหา ลองคำอื่น หรือกด “ทั้งหมด” ดูนะคะ</div>`;
+}
+function openP(code, push = true) {
+  const p = all.find(x => x.code === code); if (!p) return;
+  let i = 0;
+  const body = $('#dbody');
+  const draw = () => {
+    body.innerHTML = `<div class="sheet">
+      <div class="gal"><div class="big" id="big" style="background-image:url('${p.imgs[i] ? img(p.imgs[i]) : 'assets/logo.png'}')" role="img" aria-label="${esc(p.name)} รูปที่ ${i + 1}"></div>
+        ${p.imgs.length > 1 ? `<div class="thumbs">${p.imgs.map((f, k) => `<button data-i="${k}" aria-current="${k === i}" aria-label="ดูรูปที่ ${k + 1}" style="background-image:url('${img(f)}')"></button>`).join('')}</div>` : ''}</div>
+      <div class="info">
+        <span class="cd">${esc(p.code)} · ${esc(p.category)}</span>
+        <h2>${esc(p.name)}</h2>${p.name_en ? `<div class="en">${esc(p.name_en)}</div>` : ''}
+        <div class="tags" style="position:static">${p.flagList.map(f => FLAG_LABEL[f] ? `<span class="tag ${f}">${FLAG_LABEL[f]}</span>` : '').join('')}</div>
+        <div class="big-pr">${money(p) || '<span style="font-size:17px;color:var(--mute)">ราคา สอบถามทาง LINE</span>'}</div>
+        <p style="margin:0">${esc(p.description)}</p>
+        <dl>${[['ขนาด', p.size || 'สอบถามทาง LINE'], ['สี', p.colors], ['วัสดุ', p.materials]].filter(x => x[1]).map(x => `<dt>${x[0]}</dt><dd>${esc(x[1])}</dd>`).join('')}</dl>
+        <div class="acts"><a class="btn line" style="margin:0" href="${SHOP.lineUrl}" target="_blank" rel="noopener">สอบถามทาง LINE</a><button class="btn soft" id="cc">คัดลอกรหัส ${esc(p.code)}</button></div>
+        <small style="color:var(--mute)">ส่งรหัสสินค้าทาง LINE (ID: ${esc(SHOP.lineId)}) จะได้คำตอบเร็วขึ้นค่ะ</small>
+      </div></div>`;
+    body.querySelectorAll('.thumbs button').forEach(b => b.onclick = () => { i = +b.dataset.i; draw(); });
+    $('#cc').onclick = () => copy(`สนใจสินค้า ${p.code} ${p.name}`, 'คัดลอกแล้ว นำไปวางในแชท LINE ได้เลย');
+    let x0 = null; const big = $('#big');
+    big.addEventListener('touchstart', e => x0 = e.touches[0].clientX, { passive: true });
+    big.addEventListener('touchend', e => { if (x0 == null || p.imgs.length < 2) return; const dx = e.changedTouches[0].clientX - x0; if (Math.abs(dx) > 40) { i = (i + (dx < 0 ? 1 : -1) + p.imgs.length) % p.imgs.length; draw(); } x0 = null; });
+  };
+  draw();
+  if (!$('#dlg').open) $('#dlg').showModal();
+  if (push) location.hash = 'p-' + p.code;
+}
+function closeP() { $('#dlg').close(); }
+$('#dlg').addEventListener('close', () => { if (location.hash.startsWith('#p-')) history.replaceState(null, '', location.pathname + location.search); });
+$('#dx').onclick = closeP;
+$('#dlg').addEventListener('click', e => { if (e.target.id === 'dlg') closeP(); });
+$('#grid').addEventListener('click', e => { const c = e.target.closest('.card'); if (c) openP(c.dataset.code); });
+$('#chips').addEventListener('click', e => { const c = e.target.closest('.chip'); if (!c) return; cat = c.dataset.c; chips(); render(); });
+['q', 'flag', 'price', 'sort'].forEach(k => $('#' + k).addEventListener('input', e => { st[k] = e.target.value; render(); }));
+window.addEventListener('hashchange', () => { const h = location.hash; if (h.startsWith('#p-')) openP(h.slice(3), false); else if ($('#dlg').open) closeP(); });
+
+function siteUrl() { return location.href.split('#')[0]; }
+$('#copyLink').onclick = () => copy(siteUrl(), 'คัดลอกลิงก์แล้ว');
+function qr() {
+  if (typeof qrcode !== 'function') { $('#qrBox').textContent = 'QR'; return; }
+  const q = qrcode(0, 'M'); q.addData(siteUrl()); q.make();
+  $('#qrBox').innerHTML = q.createSvgTag({ cellSize: 4, margin: 0, scalable: true });
+}
+
+loadProducts().then(ps => {
+  all = ps.filter(p => !p.hidden && p.code && p.name);
+  chips(); render(); qr();
+  if (location.hash.startsWith('#p-')) openP(location.hash.slice(3), false);
+}).catch(e => { $('#grid').innerHTML = `<div class="empty">${esc(e.message)}</div>`; qr(); });
+}
+</script>
+</body>
+</html>
