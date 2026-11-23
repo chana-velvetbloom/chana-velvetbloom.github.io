@@ -3,6 +3,7 @@ window.SHOP = {
   name: 'C.HANA Velvet Bloom',
   lineId: 'cning4413',
   lineUrl: 'https://line.me/ti/p/~cning4413',
+  repo: { owner: 'chana-velvetbloom', name: 'chana-velvetbloom.github.io', branch: 'main' },
   dataUrl: 'data/products.csv',
   imageDir: 'images/'
 };
@@ -41,7 +42,8 @@ window.normalize = function (p) {
   return o;
 };
 window.loadProducts = async function () {
-  const r = await fetch(SHOP.dataUrl + '?v=' + Date.now());
+  let r = await fetch(SHOP.dataUrl + '?v=' + Date.now());
+  if (!r.ok) r = await fetch('products.csv?v=' + Date.now()); // สำรอง: กรณีไฟล์อยู่นอกโฟลเดอร์ data
   if (!r.ok) throw new Error('โหลดข้อมูลสินค้าไม่ได้');
   return parseCSV(await r.text()).map(normalize).sort((a, b) => (+a.sort || 999) - (+b.sort || 999));
 };
