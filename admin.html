@@ -106,6 +106,7 @@ textarea{min-height:90px;resize:vertical}
   <div class="tools">
     <input type="search" id="q" placeholder="ค้นหารหัส ชื่อ หมวด" aria-label="ค้นหา">
     <button class="btn pri" id="add">+ เพิ่มสินค้า</button>
+    <label class="btn pri" style="flex-direction:row;font-size:14.5px;color:#fff">นำเข้าชุดสินค้า (zip)<input type="file" id="impZip" accept=".zip,application/zip" hidden></label>
     <label class="btn" style="flex-direction:row;color:var(--ink);font-size:14.5px">นำเข้า CSV<input type="file" id="imp" accept=".csv,text/csv" hidden></label>
     <button class="btn" id="csvOnly">ดาวน์โหลด CSV</button>
     <button class="btn" id="save">ดาวน์โหลดไฟล์สำรอง (zip)</button>
@@ -277,6 +278,26 @@ $('#imp').addEventListener('change', async e => {
   const list = parseCSV(await file.text()).map(normalize).filter(p => p.code);
   if (!list.length) return toast('ไม่พบข้อมูลในไฟล์ (ต้องมีหัวคอลัมน์ code, name …)');
   items = list; setDirty(true); render(); toast('นำเข้า ' + list.length + ' รายการ'); e.target.value = '';
+});
+// นำเข้าชุดสินค้า: zip ที่มี products.csv + images/  → เพิ่มต่อท้าย (รหัสซ้ำ = แทนที่ของเดิม)
+$('#impZip').addEventListener('change', async e => {
+  const file = e.target.files[0]; e.target.value = ''; if (!file) return;
+  if (typeof JSZip !== 'function') return toast('โหลดตัวอ่าน zip ไม่ได้ ลองรีเฟรชหน้า');
+  try {
+    const z = await JSZip.loadAsync(file);
+    const csvEntry = Object.values(z.files).find(f => !f.dir && /(^|\/)products\.csv$/i.test(f.name));
+    if (!csvEntry) throw new Error('ในไฟล์ zip ไม่มี products.csv');
+    const rows = parseCSV(await csvEntry.async('string')).map(normalize).filter(p => p.code && p.name);
+    let nImg = 0;
+    for (const f of Object.values(z.files)) {
+      const m = !f.dir && f.name.match(/(?:^|\/)images\/([^\/]+\.(?:jpe?g|png|webp))$/i);
+      if (m) { const b = await f.async('blob'); newBlobs.set(m[1], new Blob([b], { type: /png$/i.test(m[1]) ? 'image/png' : /webp$/i.test(m[1]) ? 'image/webp' : 'image/jpeg' })); savedBlobs.delete(m[1]); nImg++; }
+    }
+    let add = 0, rep = 0;
+    rows.forEach(p => { const i = items.findIndex(x => x.code === p.code); if (i >= 0) { items[i] = p; rep++; } else { items.push(p); add++; } });
+    setDirty(true); render();
+    toast(`นำเข้าแล้ว: ใหม่ ${add} · แทนที่ ${rep} · รูป ${nImg} — ตรวจแล้วกด “บันทึกขึ้นเว็บ”`);
+  } catch (err) { toast('นำเข้าไม่สำเร็จ: ' + err.message); }
 });
 function serial() { return items.map(p => ({ ...p, images: p.imgs.join('|'), flags: p.flagList.join('|') })); }
 function download(blob, name) {
