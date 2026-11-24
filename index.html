@@ -209,6 +209,7 @@ function openP(code, push = true) {
         <div class="tags" style="position:static">${p.flagList.map(f => FLAG_LABEL[f] ? `<span class="tag ${f}">${FLAG_LABEL[f]}</span>` : '').join('')}</div>
         <div class="big-pr">${money(p) || '<span style="font-size:17px;color:var(--mute)">ราคา สอบถามทาง LINE</span>'}</div>
         <p style="margin:0">${esc(p.description)}</p>
+        <div style="margin:10px 0 0;padding:9px 12px;border-radius:12px;background:#F5EFD6;color:#55683F;font-size:14px;line-height:1.5">✿ ทุกชิ้นงาน<b>ปรับเปลี่ยนสี</b> หรือ<b> Custom </b>ตามที่ต้องการได้<br>✿ <b>เพิ่มไฟ LED</b> ได้ +20 บาท<br>ทักสอบถามทาง LINE ได้เลยค่ะ</div>
         <dl>${[['ขนาด', p.size || 'สอบถามทาง LINE'], ['สี', p.colors], ['วัสดุ', p.materials]].filter(x => x[1]).map(x => `<dt>${x[0]}</dt><dd>${esc(x[1])}</dd>`).join('')}</dl>
         <div class="acts"><a class="btn line" style="margin:0" href="${SHOP.lineUrl}" target="_blank" rel="noopener">สอบถามทาง LINE</a><button class="btn soft" id="cc">คัดลอกรหัส ${esc(p.code)}</button></div>
         <small style="color:var(--mute)">ส่งรหัสสินค้าทาง LINE (ID: ${esc(SHOP.lineId)}) จะได้คำตอบเร็วขึ้นค่ะ</small>
