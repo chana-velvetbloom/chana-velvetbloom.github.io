@@ -12,6 +12,7 @@ window.renderEbook = function (el, products, opt = {}) {
   pages.push(`<section class="pg about"><span class="pill">ยินดีต้อนรับ</span><h2>สวัสดีค่ะ จาก C.HANA</h2>
     <p>C.HANA Velvet Bloom ทำงานแฮนด์เมดจากลวดกำมะหยี่ ทั้งตุ๊กตา ดอกไม้ และของตกแต่ง ชอบชิ้นไหน ทักมาสอบถามได้เลยค่ะ</p>
     <div class="steps"><div class="st"><b>1</b>เลือกสินค้า<br>จดรหัสไว้</div><div class="st"><b>2</b>แอด LINE<br>ส่งรหัสสินค้า</div><div class="st"><b>3</b>สอบถามราคา<br>ขนาด และสั่งซื้อ</div></div>
+    <div style="margin:3mm 0;padding:2.5mm 4mm;border-radius:3mm;background:#F5EFD6;color:#55683F;font-size:10.5pt;text-align:center">✿ ทุกชิ้นงาน<b>ปรับเปลี่ยนสี</b> หรือ<b> Custom </b>ตามที่ต้องการได้ · <b>เพิ่มไฟ LED</b> +20 บาท</div>
     <div class="qb"><img src="assets/line-qr.png" alt=""><div><div class="m" style="font-size:13pt;color:var(--g)">สั่งซื้อ / สอบถาม</div><div style="font-size:11pt;margin-top:1mm">LINE ID: <b>${esc(SHOP.lineId)}</b></div><div style="font-size:9pt;color:var(--mu)">สแกน QR เพื่อเพิ่มเพื่อน</div></div></div>
     <div class="ft"><span>C.HANA Velvet Bloom</span><span>02</span></div></section>`);
   // เลขหน้า: ปก 1, แนะนำ 2, เริ่มสินค้าหน้า 3 (ไม่มีสารบัญ)
@@ -32,7 +33,7 @@ window.renderEbook = function (el, products, opt = {}) {
     }
   });
   pages.push(...body);
-  pages.push(`<section class="pg back"><img class="logo" src="assets/logo.png" alt=""><h2>ขอบคุณที่แวะมาชมนะคะ</h2><p style="font-size:11pt;margin:2mm 0 0">สนใจชิ้นไหน ทักมาสอบถามได้เลยค่ะ</p><img class="qr" src="assets/line-qr.png" alt=""><div class="m" style="font-size:14pt">LINE ID: ${esc(SHOP.lineId)}</div></section>`);
+  pages.push(`<section class="pg back"><img class="logo" src="assets/logo.png" alt=""><h2>ขอบคุณที่แวะมาชมนะคะ</h2><p style="font-size:11pt;margin:2mm 0 0">สนใจชิ้นไหน ทักมาสอบถามได้เลยค่ะ<br>ทุกชิ้นปรับเปลี่ยนสี หรือ Custom งานได้ · เพิ่มไฟ LED +20 บาท</p><img class="qr" src="assets/line-qr.png" alt=""><div class="m" style="font-size:14pt">LINE ID: ${esc(SHOP.lineId)}</div></section>`);
   el.classList.add('eb');
   el.innerHTML = pages.join('');
   return { pages: pages.length, items: list.length };
